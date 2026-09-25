@@ -82,6 +82,7 @@ def google_login(data: GoogleLoginRequest, response: Response):
             "name": idinfo.get("name"),
             "picture": idinfo.get("picture")
         }
+        console.log(user);
 
 
         # print("==============================")

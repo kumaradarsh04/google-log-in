@@ -1,7 +1,5 @@
 import os
 
-from dotenv import load_dotenv
-
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -10,7 +8,7 @@ from pydantic import BaseModel
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
-load_dotenv()
+# load_dotenv()
 
 app = FastAPI()
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")

@@ -134,7 +134,7 @@ def google_login(data: GoogleLoginRequest, response: Response):
             path="/",
             max_age=60 * 60 * 24 * 30
         )
-         print("Coolie is set")
+        print("Coolie is set")
 
 
         # ----------------------------------

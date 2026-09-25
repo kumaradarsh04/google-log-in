@@ -2,11 +2,9 @@ async function handleCredentialResponse(response) {
 
     console.log("Google gave us an ID token.");
 
-    const idToken = response.credential;
-
 
     // ----------------------------------------
-    // Send token to our backend
+    // Send token to backend
     // ----------------------------------------
 
     const result = await fetch("/auth/google", {
@@ -18,19 +16,17 @@ async function handleCredentialResponse(response) {
         },
 
         body: JSON.stringify({
-            credential: idToken
+            credential: response.credential
         })
 
     });
 
 
-    // ----------------------------------------
-    // Backend rejected token
-    // ----------------------------------------
-
     if (!result.ok) {
 
-        console.error("Google token verification failed.");
+        console.error(
+            "Google token verification failed."
+        );
 
         alert("Authentication failed.");
 
@@ -38,68 +34,158 @@ async function handleCredentialResponse(response) {
     }
 
 
+    console.log(
+        "Google token verified successfully."
+    );
+
+
+    // The backend has now created
+    // our application session.
+
+
+    await loadCurrentUser();
+}
+
+
+// ==========================================
+// LOAD CURRENT USER
+// ==========================================
+
+async function loadCurrentUser() {
+
+    console.log(
+        "Checking existing application session..."
+    );
+
+
+    const result = await fetch("/auth/me");
+
+
     // ----------------------------------------
-    // Backend accepted token
+    // No valid session
     // ----------------------------------------
 
-    const data = await result.json();
+    if (!result.ok) {
 
+        console.log(
+            "No active application session."
+        );
 
-    console.log("Backend verified the user:");
-    console.log(data);
+        showLogin();
 
-
-    const user = data.user;
-
-
-    // ----------------------------------------
-    // Display verified information
-    // ----------------------------------------
-
-    document.getElementById("user-name").textContent =
-        "Name: " + user.name;
-
-    document.getElementById("user-email").textContent =
-        "Email: " + user.email;
-
-
-    const profilePicture =
-        document.getElementById("profile-picture");
-
-
-    if (user.picture) {
-
-        profilePicture.src = user.picture;
-
+        return;
     }
 
 
     // ----------------------------------------
-    // Change UI
+    // Valid session
     // ----------------------------------------
 
-    document.getElementById("login-section")
-        .style.display = "none";
+    const data = await result.json();
 
-    document.getElementById("user-section")
-        .style.display = "block";
+    console.log(
+        "Existing session found!"
+    );
+
+    console.log(data);
 
 
-    console.log("✅ Authentication successful!");
+    showUser(data.user);
 }
 
 
-function logout() {
+// ==========================================
+// SHOW USER
+// ==========================================
 
-    document.getElementById("login-section")
-        .style.display = "block";
+function showUser(user) {
 
-    document.getElementById("user-section")
-        .style.display = "none";
+    document.getElementById(
+        "user-name"
+    ).textContent =
+        "Name: " + user.name;
 
 
-    google.accounts.id.disableAutoSelect();
+    document.getElementById(
+        "user-email"
+    ).textContent =
+        "Email: " + user.email;
 
-    console.log("Logged out.");
+
+    const profilePicture =
+        document.getElementById(
+            "profile-picture"
+        );
+
+
+    if (user.picture) {
+
+        profilePicture.src =
+            user.picture;
+
+    }
+
+
+    document.getElementById(
+        "login-section"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "user-section"
+    ).style.display = "block";
+}
+
+
+// ==========================================
+// SHOW LOGIN
+// ==========================================
+
+function showLogin() {
+
+    document.getElementById(
+        "login-section"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "user-section"
+    ).style.display = "none";
+}
+
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+async function logout() {
+
+    const result = await fetch(
+        "/auth/logout",
+        {
+            method: "POST"
+        }
+    );
+
+
+    if (result.ok) {
+
+        console.log(
+            "Logged out successfully."
+        );
+
+        showLogin();
+
+    }
 
 }
+
+
+// ==========================================
+// CHECK SESSION WHEN PAGE LOADS
+// ==========================================
+
+window.addEventListener(
+    "DOMContentLoaded",
+    loadCurrentUser
+);

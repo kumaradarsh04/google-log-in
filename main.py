@@ -101,6 +101,9 @@ def google_login(data: GoogleLoginRequest, response: Response):
             path="/",
             max_age=60 * 60 * 24 * 30
         )
+        print("SESSION CREATED:")
+        print(session_id)
+        print("COOKIE SET!")
 
 
         # ----------------------------------

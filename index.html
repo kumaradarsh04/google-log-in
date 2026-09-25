@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Google Login Demo</title>
+
+    <script
+        src="https://accounts.google.com/gsi/client"
+        async
+        defer>
+    </script>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        .container {
+            width: 600px;
+            max-width: 90%;
+            margin: auto;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 40px 20px;
+        }
+
+        #user-section {
+            display: none;
+        }
+
+        #profile-picture {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 20px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <h1>Google Login Demo</h1>
+
+    <div class="container">
+
+
+        <!-- LOGIN -->
+
+        <div id="login-section">
+
+            <h2>Sign in</h2>
+
+            <div
+                id="g_id_onload"
+
+                data-client_id="215614999054-8seuea0iui18ic4cvnnlp6ko707f1tck.apps.googleusercontent.com"
+
+                data-callback="handleCredentialResponse">
+
+            </div>
+
+
+            <div class="g_id_signin"></div>
+
+        </div>
+
+
+        <!-- USER -->
+
+        <div id="user-section">
+
+            <h2>Welcome!</h2>
+
+            <img
+                id="profile-picture"
+
+                alt="Profile picture"
+
+                referrerpolicy="no-referrer"
+            >
+
+            <p id="user-name"></p>
+
+            <p id="user-email"></p>
+
+            <button onclick="logout()">
+                Logout
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

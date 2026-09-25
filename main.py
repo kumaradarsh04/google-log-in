@@ -1,4 +1,5 @@
 import os
+import psycopg
 import secrets
 
 from fastapi import FastAPI, HTTPException, Request, Response
@@ -17,7 +18,7 @@ app = FastAPI()
 # ==========================================
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
-
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
 
 # ==========================================
 # TEMPORARY SESSION STORAGE
@@ -28,14 +29,32 @@ GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
 # session_id -> user
 #
 
-sessions = {}
-
 # ==========================================
 # REQUEST MODEL
 # ==========================================
 class GoogleLoginRequest(BaseModel):
     credential: str
 
+
+def get_db_connection():
+    return psycopg.connect(DATABASE_URL)
+
+def create_tables():
+    with get_db_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS sessions (
+                id TEXT PRIMARY KEY,
+                google_id TEXT NOT NULL,
+                email TEXT,
+                name TEXT,
+                picture TEXT,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                expires_at TIMESTAMPTZ NOT NULL
+            )
+        """)
+        conn.commit()
+
+create_tables()
 
 # ==========================================
 # GOOGLE LOGIN
@@ -85,7 +104,19 @@ def google_login(data: GoogleLoginRequest, response: Response):
         # 4. Store session on server
         # ----------------------------------
 
-        sessions[session_id] = user
+        # sessions[session_id] = user
+        with get_db_connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO sessions
+                (id, google_id, email, name, picture, expires_at)
+                VALUES
+                (%s, %s, %s, %s, %s, NOW() + INTERVAL '30 days')
+                """, (session_id, user["google_id"], user["email"],
+                    user["name"], user["picture"]
+                )
+            )
+        conn.commit()
 
 
         # ----------------------------------
@@ -101,9 +132,6 @@ def google_login(data: GoogleLoginRequest, response: Response):
             path="/",
             max_age=60 * 60 * 24 * 30
         )
-        print("SESSION CREATED:")
-        print(session_id)
-        print("COOKIE SET!")
 
 
         # ----------------------------------
@@ -136,21 +164,41 @@ def get_current_user(request: Request):
         )
 
     # Look up session
-    user = sessions.get(session_id)
+    # user = sessions.get(session_id)
+    with get_db_connection() as conn:
+        row = conn.execute(
+            """
+            SELECT google_id, email, name, picture
+            FROM sessions
+            WHERE id = %s
+            AND expires_at > NOW()
+            """,
+            (session_id,)
+        ).fetchone()
 
-    # Session doesn't exist
-    if not user:
+    if not row:
         raise HTTPException(
             status_code=401,
-            detail="Invalid session"
+            detail="Invalid or expired session"
         )
+
+    # Session doesn't exist
+    # if not user:
+    #     raise HTTPException(
+    #         status_code=401,
+    #         detail="Invalid session"
+    #     )
 
     # Session is valid
     return {
         "success": True,
-        "user": user
+        "user": {
+            "google_id": row[0],
+            "email": row[1],
+            "name": row[2],
+            "picture": row[3]
+        }
     }
-
 
 # ==========================================
 # LOGOUT

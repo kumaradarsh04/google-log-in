@@ -66,13 +66,8 @@ async function loadCurrentUser() {
     // ----------------------------------------
 
     if (!result.ok) {
-
-        console.log(
-            "No active application session."
-        );
-
+        console.log("ℹ️ No existing session found. Showing login");
         showLogin();
-
         return;
     }
 
@@ -82,14 +77,8 @@ async function loadCurrentUser() {
     // ----------------------------------------
 
     const data = await result.json();
-
-    console.log(
-        "Existing session found!"
-    );
-
+    console.log("✅ Existing application session found!");
     console.log(data);
-
-
     showUser(data.user);
 }
 

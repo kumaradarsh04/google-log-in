@@ -18,13 +18,7 @@ app = FastAPI()
 # ==========================================
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
-DB_CONFIG = {
-    "host": os.environ.get("SUPABASE_DB_HOST", ""),
-    "port": os.environ.get("SUPABASE_DB_PORT", "5432"),
-    "dbname": os.environ.get("SUPABASE_DB_NAME", "postgres"),
-    "user": os.environ.get("SUPABASE_DB_USER", "postgres"),
-    "password": os.environ.get("SUPABASE_DB_PASSWORD", ""),
-}
+DATABASE_URL = os.environ.get("DATABSE_URL", "")
 
 # ==========================================
 # TEMPORARY SESSION STORAGE

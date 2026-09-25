@@ -16,7 +16,7 @@ app = FastAPI()
 # CONFIGURATION
 # ==========================================
 
-GOOGLE_CLIENT_ID = os.environ("GOOGLE_CLIENT_ID", "")
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
 
 
 # ==========================================

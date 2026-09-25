@@ -18,7 +18,7 @@ app = FastAPI()
 # ==========================================
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
-DATABASE_URL = os.environ.get("DATABSE_URL", "")
+DATABASE_URL = os.environ.get["DATABSE_URL"]
 
 # ==========================================
 # TEMPORARY SESSION STORAGE

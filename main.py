@@ -82,7 +82,7 @@ def google_login(data: GoogleLoginRequest, response: Response):
             "name": idinfo.get("name"),
             "picture": idinfo.get("picture")
         }
-        console.log(user);
+        print("User content created")
 
 
         # print("==============================")
@@ -118,6 +118,7 @@ def google_login(data: GoogleLoginRequest, response: Response):
                 )
             )
         conn.commit()
+        print("Added user session to databaes")
 
 
         # ----------------------------------
@@ -133,6 +134,7 @@ def google_login(data: GoogleLoginRequest, response: Response):
             path="/",
             max_age=60 * 60 * 24 * 30
         )
+         print("Coolie is set")
 
 
         # ----------------------------------

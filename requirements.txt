@@ -3,4 +3,3 @@ uvicorn
 google-auth
 requests
 psycopg[binary]
-psycopg2

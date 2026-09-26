@@ -215,19 +215,24 @@ def logout(
     response: Response
 ):
 
+    print("GETTING SESSION_ID...", end="")
     session_id = request.cookies.get("__Host-session")
-
+    print(session_id)
 
     # Remove server-side session
+    print("POPPING SESSION_ID...", end="")
     if session_id:
         sessions.pop(session_id, None)
+        print("POPPED")
 
 
     # Delete browser cookie
+    print("DELETING COOKIE...", end="")
     response.delete_cookie(
         key="__Host-session",
         path="/"
     )
+    print("DELETED")
 
 
     return {

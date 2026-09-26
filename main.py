@@ -18,7 +18,7 @@ app = FastAPI()
 # ==========================================
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
-DATABASE_URL = os.environ["DATABASE_URL"]
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
 
 # ==========================================
 # TEMPORARY SESSION STORAGE
@@ -66,11 +66,13 @@ def google_login(data: GoogleLoginRequest, response: Response):
         # ----------------------------------
         # 1. Verify Google ID token
         # ----------------------------------
+        print("Verifying Token...")
         idinfo = id_token.verify_oauth2_token(
             data.credential,
             requests.Request(),
             GOOGLE_CLIENT_ID
         )
+        
 
 
         # ----------------------------------

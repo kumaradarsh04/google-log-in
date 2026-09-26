@@ -119,7 +119,7 @@ def google_login(data: GoogleLoginRequest, response: Response):
                     user["name"], user["picture"]
                 )
             )
-        conn.commit()
+            conn.commit()
         print("Added user session to databaes")
 
 

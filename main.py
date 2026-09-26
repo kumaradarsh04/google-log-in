@@ -220,10 +220,10 @@ def logout(
     print(session_id)
 
     # Remove server-side session
-    print("POPPING SESSION_ID...", end="")
-    if session_id:
-        sessions.pop(session_id, None)
-        print("POPPED")
+    # print("POPPING SESSION_ID...", end="")
+    # if session_id:
+        # sessions.pop(session_id, None)
+        # print("POPPED")
 
 
     # Delete browser cookie

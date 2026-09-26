@@ -18,7 +18,13 @@ app = FastAPI()
 # ==========================================
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
-DATABASE_URL = os.environ.get("DATABASE_URL", "")
+DB_CONFIG = {
+    "host": os.environ.get("SUPABASE_DB_HOST", ""),
+    "port": os.environ.get("SUPABASE_DB_PORT", "5432"),
+    "dbname": os.environ.get("SUPABASE_DB_NAME", "postgres"),
+    "user": os.environ.get("SUPABASE_DB_USER", "postgres"),
+    "password": os.environ.get("SUPABASE_DB_PASSWORD", ""),
+}
 
 # ==========================================
 # TEMPORARY SESSION STORAGE
@@ -37,7 +43,7 @@ class GoogleLoginRequest(BaseModel):
 
 
 def get_db_connection():
-    return psycopg.connect(DATABASE_URL)
+    return psycopg.connect(**DB_CONFIG)
 
 def create_tables():
     with get_db_connection() as conn:

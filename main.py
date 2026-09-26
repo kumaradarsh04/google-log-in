@@ -1,5 +1,5 @@
 import os
-import psycopg
+import psycopg2
 import secrets
 
 from fastapi import FastAPI, HTTPException, Request, Response
@@ -43,7 +43,7 @@ class GoogleLoginRequest(BaseModel):
 
 
 def get_db_connection():
-    return psycopg.connect(**DB_CONFIG)
+    return psycopg2.connect(**DB_CONFIG)
 
 def create_tables():
     with get_db_connection() as conn:
